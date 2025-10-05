@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bus Summary</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<style>
+body {
+      margin: 0;
+      background-color: lightgrey; 
+    }
+
+.progress {
+  height: 8px;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+/* use CSS variable for progress width */
+.progress-bar {
+  width: var(--progress, 0%);
+}
+
+/*hover effect on cards */
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+
+</head>
+<body>
+  <div class="container py-4">
+    <h2 class="mb-4 text-center">Bus Summary</h2>
+
+    <div class="row">
+      {% if cards and cards|length > 0 %}
+        {% for bus in cards %}
+        <div class="col-md-4 my-3">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ bus.bus_number }}</h5>
+              <div><small class="text-muted">ID: {{ bus.bus_id }}</small></div>
+              <div class="mb-2"><strong>Route:</strong> {{ bus.route }}</div>
+              <div class="mb-2">Next stop: <strong>{{ bus.next_stop }}</strong> at <strong>{{ bus.next_time }}</strong></div>
+              <div class="mb-2">Available seats: <strong>{{ bus.available_seats }}</strong> / {{ bus.total_seats }}</div>
+              <div class="mb-2">Intents to travel: <strong>{{ bus.intent_count }}</strong></div>
+
+              {% if bus.total_seats > 0 %}
+                <div class="progress mb-2">
+                  <div class="progress-bar {{ bus.progress_class }}" 
+                       role="progressbar" 
+                       style="--progress: {{ bus.percent }}%;" 
+                       aria-valuenow="{{ bus.percent }}" 
+                       aria-valuemin="0" 
+                       aria-valuemax="100">
+                    {{ bus.percent }}%
+                  </div>
+                </div>
+              {% endif %}
+
+              <div class="d-flex gap-2 mt-3">
+                <a href="{{ url_for('schedule', bus_id=bus.bus_id) }}" class="btn btn-sm btn-outline-primary">View Schedule</a>
+                <a href="{{ url_for('book') }}" class="btn btn-sm btn-primary">Book</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center my-4">
+          <div class="alert alert-info">No bus data available.</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+    </div>
+  </div>
+</body>
+</html>

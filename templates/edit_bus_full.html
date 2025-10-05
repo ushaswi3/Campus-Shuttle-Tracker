@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Bus Details</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="card shadow-sm p-4 rounded-4">
+        <h2 class="mb-4 text-center text-primary">Edit Bus Details</h2>
+        <form method="POST">
+            <!-- Bus Info -->
+            <div class="card mb-4 border-0 shadow-sm p-3">
+                <h5 class="text-secondary">🚌 Bus Information</h5>
+                <div class="mb-3">
+                    <label class="form-label">Bus Number</label>
+                    <input type="text" name="bus_number" class="form-control" value="{{ bus.bus_number }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Total Seats</label>
+                    <input type="number" name="total_seats" class="form-control" value="{{ bus.total_seats }}" required>
+                </div>
+            </div>
+
+            <!-- Seats Info -->
+            <div class="card mb-4 border-0 shadow-sm p-3">
+                <h5 class="text-secondary">💺 Seat Availability</h5>
+                <div class="mb-3">
+                    <label class="form-label">Available Seats</label>
+                    <input type="number" name="available_seats" class="form-control" 
+                           value="{{ seat.available_seats if seat else bus.total_seats }}" required>
+                </div>
+            </div>
+
+            <!-- Routes Info -->
+            <div class="card mb-4 border-0 shadow-sm p-3">
+                <h5 class="text-secondary">🗺️ Existing Routes</h5>
+                {% if routes %}
+                    {% for route in routes %}
+                    <div class="row mb-2 align-items-center border-bottom pb-2">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" 
+                                   name="stop_name_{{ route.route_id }}" 
+                                   value="{{ route.stop_name }}" required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="time" class="form-control" 
+                                   name="stop_time_{{ route.route_id }}" 
+                                   value="{{ route.stop_time }}" required>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="delete_route[]" 
+                                       value="{{ route.route_id }}" id="del{{ route.route_id }}">
+                                <label class="form-check-label text-danger" for="del{{ route.route_id }}">
+                                    Delete
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No existing routes found for this bus.</p>
+                {% endif %}
+            </div>
+
+            <!-- Add New Routes -->
+            <div class="card mb-4 border-0 shadow-sm p-3">
+                <h5 class="text-secondary">➕ Add New Routes</h5>
+                <div id="newRoutesContainer"></div>
+                <button type="button" class="btn btn-outline-primary" onclick="addRoute()">Add New Route</button>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary w-50">Update Bus Details</button>
+                <a href="{{ url_for('admin') }}" class="btn btn-secondary w-25 ms-2">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addRoute() {
+    const container = document.getElementById('newRoutesContainer');
+    const div = document.createElement('div');
+    div.className = 'row mb-2 align-items-center';
+    div.innerHTML = `
+        <div class="col-md-5">
+            <input type="text" class="form-control" name="new_stop_name[]" placeholder="Stop Name" required>
+        </div>
+        <div class="col-md-5">
+            <input type="time" class="form-control" name="new_stop_time[]" required>
+        </div>
+        <div class="col-md-2 text-center">
+            <button type="button" class="btn btn-danger" onclick="this.parentElement.parentElement.remove()">Remove</button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+// confirm delete alert
+document.querySelector('form').addEventListener('submit', function (e) {
+    const deletes = document.querySelectorAll('input[name="delete_route[]"]:checked');
+    if (deletes.length > 0) {
+        const confirmDelete = confirm("You have selected routes to delete. Are you sure?");
+        if (!confirmDelete) e.preventDefault();
+    }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

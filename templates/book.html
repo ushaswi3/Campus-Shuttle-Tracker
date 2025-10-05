@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book a Seat</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: lightgrey; 
+      font-family: Arial, sans-serif;
+    }
+
+    form {
+      background-color: #ffffff; 
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body >
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">Book a Seat</h1>
+
+  <form method="POST" class="p-4 bg-white shadow rounded">
+    <div class="mb-3">
+      <label for="bus_id" class="form-label">Select Bus</label>
+      <select name="bus_id" id="bus_id" class="form-select" required>
+        {% for bus in buses %}
+          
+          <option value="{{ bus.bus_id }}">{{ bus.bus_number }} ({{ bus.route_info }})</option>
+
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="user_name" class="form-label">Your Name</label>
+      <input type="text" name="user_name" id="user_name" class="form-control" required>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-success">Confirm Booking</button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Back</a>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

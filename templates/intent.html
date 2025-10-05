@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Intent to Travel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: lightgrey; 
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h2 class="mb-4">Mark Your Intent to Travel</h2>
+
+    <form method="POST" action="/intent" class="card p-4 shadow">
+      <div class="mb-3">
+        <label for="student_id" class="form-label">Student ID</label>
+        <input type="text" id="student_id" name="student_id" class="form-control" placeholder="Enter your Student ID" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="bus_id" class="form-label">Select Bus</label>
+        <select id="bus_id" name="bus_id" class="form-select" required>
+          {% for bus in buses %}
+          <option value="{{ bus.bus_id }}">{{ bus.bus_number }} (Seats: {{ bus.total_seats }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <form method="POST" action="/intent" class="card p-4 shadow">
+  <!-- your inputs -->
+
+  <div class="d-flex justify-content-between mt-3">
+    <button type="submit" class="btn btn-primary">Confirm Intent</button>
+    <a href="/" class="btn btn-secondary">Back</a>
+  </div>
+</form>
+
+    </form>
+  </div>
+</body>
+</html>
